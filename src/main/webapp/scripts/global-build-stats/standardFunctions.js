@@ -1,13 +1,16 @@
 function fieldFilterTypeSelected(selectedType, regexInputFieldId, filterHiddenInputFieldId){
+	const regexInputField = document.getElementById(regexInputFieldId)
+	const filterHiddenInputField = document.getElementById(filterHiddenInputFieldId)
+
 	if(FIELD_FILTER_ALL == selectedType){
-		$(regexInputFieldId).disabled = true;
-		$(filterHiddenInputFieldId).value = FIELD_FILTER_ALL;
+		regexInputField.disabled = true;
+		filterHiddenInputField.value = FIELD_FILTER_ALL;
 	} else if(FIELD_FILTER_REGEX == selectedType){
-		$(regexInputFieldId).disabled = false;
-		$(filterHiddenInputFieldId).value = FIELD_FILTER_REGEX+'('+$(regexInputFieldId).value+')';
+		regexInputField.disabled = false;
+		filterHiddenInputField.value = FIELD_FILTER_REGEX+'('+regexInputField.value+')';
 	} else if(selectedType.indexOf(FIELD_FILTER_REGEX) != -1){
-		$(regexInputFieldId).disabled = true;
-		$(filterHiddenInputFieldId).value = selectedType;
+		regexInputField.disabled = true;
+		filterHiddenInputField.value = selectedType;
 	}
 }
 	
@@ -16,7 +19,7 @@ function initializeRegexField(targetField, regex){
 	if(extractingRegex.test(regex)){
 		extractingRegex.exec(regex);
 		var regexToPut = RegExp.$1;
-		$(targetField).value = regexToPut;
+		document.getElementById(targetField).value = regexToPut;
 	}
 }
 
@@ -25,7 +28,9 @@ function initializeRegexField(targetField, regex){
 // So registerValidator implementation is recopied here
 function validateField(field){
     var validationErrorAreaClassName = field.getAttribute("validationErrorAreaClassName");
-    if (!validationErrorAreaClassName) validationErrorAreaClassName = "validation-error-area";
+    if (!validationErrorAreaClassName) {
+			validationErrorAreaClassName = "validation-error-area";
+		}
     
     var targetValidationError = findFollowingSPAN(field, validationErrorAreaClassName);
     var targetUrl = function() {
@@ -34,7 +39,9 @@ function validateField(field){
     var url = targetUrl();
 
     var method = field.getAttribute("checkMethod");
-    if (!method) method = "get";
+    if (!method) {
+			method = "get";
+		}
 	
     FormChecker.sendRequest(url, {
         method : method,
@@ -46,7 +53,7 @@ function validateField(field){
 
 function findFollowingSPAN(input, className) {
     var elem = input.nextSibling;
-    while (elem.tagName != "SPAN" || elem.className != className)
+    while (elem.tagName !== "SPAN" || elem.className !== className)
         elem = elem.nextSibling;
 
     return elem;
@@ -57,7 +64,7 @@ function isDivErrorPresentInForm(myForm){
 	var divErrorPresent = false;
 	var i=0;
 	while(i<elems.length && !divErrorPresent){
-		divErrorPresent = (elems[i].tagName == "DIV");
+		divErrorPresent = elems[i].tagName == "DIV";
 		i++;
 	}
 	return divErrorPresent;
@@ -77,5 +84,5 @@ function generateErrorMessage(message){
 	return "<div class=\"error\"><img src=\"/static/6d8c7ad0/images/none.gif\" height=\"16\" width=\"1\">"+message+"</div>";
 }
 
-Behaviour.register(Object.extend(hudsonRules, myHudsonRules));
+Behaviour.register(Object.assign(hudsonRules, myHudsonRules));
 Behaviour.apply();
